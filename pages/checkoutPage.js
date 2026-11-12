@@ -5,6 +5,7 @@ export class CheckoutPage {
         this.lastName = page.locator('#last-name');
         this.postalCode = page.locator('#postal-code');
         this.continueButton = this.page.getByRole("button", { name: "Continue" });
+        this.errorMessage = this.page.getByRole('alert')
     }
 
     async enterFirstName(firstName) {
