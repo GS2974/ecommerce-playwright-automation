@@ -25,7 +25,7 @@ test('Submit customer information and navigate to checkout overview', async ({ p
     await expect(checkoutOverviewPage.getAllOverviewItems()).toHaveCount(1);
 });
 
-test('Verify cart and checkout overview contain the same two products', async ({ page, inventoryPage, cartPage, checkoutPage, checkoutOverviewPage }) => {
+test('Complete purchase of two products and verify order confirmation', async ({ page, inventoryPage, cartPage, checkoutPage, checkoutOverviewPage, checkoutCompletePage }) => {
     await inventoryPage.addProductToCart(products.backpack);
     await inventoryPage.addProductToCart(products.fleeceJacket);
     
@@ -47,4 +47,9 @@ test('Verify cart and checkout overview contain the same two products', async ({
     await expect(checkoutOverviewPage.getOverviewItem(products.fleeceJacket)).toBeVisible();
 
     await expect(checkoutOverviewPage.getAllOverviewItems()).toHaveCount(2);
+
+    await checkoutOverviewPage.clickFinish();
+    await expect(page).toHaveURL(/checkout-complete.html/)
+
+    await expect(checkoutCompletePage.getConfirmationMessage()).toBeVisible();
 })

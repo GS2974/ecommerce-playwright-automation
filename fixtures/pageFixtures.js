@@ -4,6 +4,7 @@ import { CartPage } from '../pages/cartPage.js';
 import { LoginPage } from '../pages/loginPage.js';
 import { CheckoutPage } from '../pages/checkoutPage.js';
 import { CheckoutOverviewPage } from '../pages/checkoutOverviewPage.js';
+import { CheckoutCompletePage } from '../pages/checkoutCompletePage.js';
 
 export const test = base.extend({
     inventoryPage: async ({ page }, use) => {
@@ -28,7 +29,12 @@ export const test = base.extend({
 
     checkoutOverviewPage: async ({ page }, use) => {
         const checkoutOverviewPage = new CheckoutOverviewPage(page);
-        await use(checkoutOverviewPage)
+        await use(checkoutOverviewPage);
+    },
+
+    checkoutCompletePage: async ({ page }, use) => {
+        const checkoutCompletePage = new CheckoutCompletePage(page);
+        await use(checkoutCompletePage);
     }
 
 });
