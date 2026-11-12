@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/pageFixtures.js';
 import { products } from '../test-data/products.js';
+import { checkoutValidationData } from '../test-data/checkoutValidationData.js';
 
 async function navigateToCheckoutInformation(inventoryPage, cartPage) {
     await inventoryPage.addProductToCart(products.backpack);
@@ -60,35 +61,18 @@ test('Complete purchase of two products and verify order confirmation', async ({
     await expect(checkoutCompletePage.getConfirmationMessage()).toBeVisible();
 });
 
-test('Display validation error when First Name is missing', async ({ inventoryPage, cartPage, checkoutPage }) => {
+for (const scenario of checkoutValidationData) {
+    test(`Display Validation error when ${scenario.name} is missing`, async ({ inventoryPage, checkoutPage, cartPage }) => {
+        
+        await navigateToCheckoutInformation(inventoryPage, cartPage);
 
-    await navigateToCheckoutInformation(inventoryPage, cartPage);
-    await checkoutPage.enterLastName("Doe");
-    await checkoutPage.enterFirstName("");
-    await checkoutPage.enterPostalCode("12345");
-    await checkoutPage.clickContinue();
-    await expect(checkoutPage.errorMessage).toHaveText("Error: First Name is required");
+        await checkoutPage.enterFirstName(scenario.firstName);
+        await checkoutPage.enterLastName(scenario.lastName);
+        await checkoutPage.enterPostalCode(scenario.postalCode);
 
-});
+        await checkoutPage.clickContinue();
 
-test('Display validation error when Last Name is missing', async ({ inventoryPage, cartPage, checkoutPage }) => {
+        await expect(checkoutPage.errorMessage).toHaveText(scenario.expectedError);
+    });
+}
 
-    await navigateToCheckoutInformation(inventoryPage, cartPage);
-    await checkoutPage.enterLastName("");
-    await checkoutPage.enterFirstName("John");
-    await checkoutPage.enterPostalCode("12345");
-    await checkoutPage.clickContinue();
-    await expect(checkoutPage.errorMessage).toHaveText("Error: Last Name is required");
-
-});
-
-test('Display validation error when Postal Code is missing', async ({ inventoryPage, cartPage, checkoutPage }) => {
-
-    await navigateToCheckoutInformation(inventoryPage, cartPage);
-    await checkoutPage.enterLastName("Doe");
-    await checkoutPage.enterFirstName("John");
-    await checkoutPage.enterPostalCode("");
-    await checkoutPage.clickContinue();
-    await expect(checkoutPage.errorMessage).toHaveText("Error: Postal Code is required");
-
-});
